@@ -126,7 +126,7 @@
         // --- بيانات الأسئلة ---
         const assignmentData = [
             {
-                id: 1,
+                id: '1',
                 q_en: "Q1: What do you mean by program?",
                 q_ar: "السؤال الأول: ماذا تقصد بالبرنامج؟",
                 ans_en: "A program is a set of logical instructions written in a programming language that a computer can execute to perform a specific task or solve a problem.",
@@ -134,7 +134,7 @@
                 explanation: "إذا سألك الأستاذ كُله: أستاذ البرنامج ببساطة هو مجموعة أوامر نكتبها بلغة يفهمها الحاسوب (مثل C++)، حتى نخليه يسوي شغلة معينة إحنا نريدها، مثل آلة حاسبة أو لعبة أو نظام."
             },
             {
-                id: 2,
+                id: '2',
                 q_en: "Q2: Why C++ language becomes quite popular?",
                 q_ar: "السؤال الثاني: لماذا أصبحت لغة C++ شائعة ومشهورة جداً؟",
                 ans_en: "1. It supports all features of both structured programming and Object-Oriented Programming (OOP).\n2. It focuses on function and class templates for handling various data types.",
@@ -142,7 +142,7 @@
                 explanation: "إذا سألك كُله: أستاذ لأن هاي اللغة جمعت بين الماضي والحاضر؛ يعني تدعم البرمجة الهيكلية القديمة، وبنفس الوقت تدعم الـ OOP (البرمجة الكائنية) اللي تعتمد على الكلاسات، وبيها (Templates) تسهل علينا ترتيب البيانات."
             },
             {
-                id: 3,
+                id: '3',
                 q_en: "Q3: Talk briefly about C++ program development process?",
                 q_ar: "السؤال الثالث: تحدث باختصار عن عملية تطوير برنامج C++ (مراحل الـ PDP)؟",
                 ans_en: "The C++ program development process consists of 6 phases:\n1. Edit: Typing the source code (.cpp).\n2. Pre-Processor: Preparing files before compilation.\n3. Compilation: Converting source code to object code.\n4. Linking: Combining object code with library functions.\n5. Loading: Loading the program into memory.\n6. CPU: Executing the instructions.",
@@ -306,7 +306,7 @@
             const isAr = currentLang === 'ar';
 
             assignmentData.forEach(item => {
-                const isOpen = openQuestionId === item.id;
+                const isOpen = String(openQuestionId) === String(item.id);
                 
                 // بناء هيكل السؤال
                 const questionDiv = document.createElement('div');
