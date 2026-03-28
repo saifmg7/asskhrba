@@ -1,818 +1,452 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق أسس الهندسة الكهربائية الذكي</title>
+    <title>حلول واجب سيف علي</title>
+    <!-- تضمين مكتبة Tailwind CSS للتصميم -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- تضمين مكتبة Lucide للأيقونات -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
         body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f3f4f6;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .active-tab {
-            color: #2563eb;
-            border-top: 2px solid #2563eb;
+        /* إعدادات الطباعة وتحويل PDF */
+        @media print {
+            body { background-color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-hidden { display: none !important; }
+            .print-expand { 
+                max-height: none !important; 
+                opacity: 1 !important; 
+                overflow: visible !important; 
+                border-top: none !important; 
+                display: block !important;
+            }
+            .print-shadow-none { box-shadow: none !important; border: 1px solid #e5e7eb !important; margin-bottom: 2rem !important; }
+            .print-block { display: block !important; }
+            
+            body::before {
+                content: attr(data-print-title);
+                display: block;
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #000;
+                color: black;
+            }
         }
-        .triangle-container {
-            position: relative;
-            width: 200px;
-            height: 180px;
-            margin: 0 auto;
-        }
-        .triangle-bg {
-            width: 0;
-            height: 0;
-            border-left: 100px solid transparent;
-            border-right: 100px solid transparent;
-            border-bottom: 173.2px solid #e0e7ff;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .triangle-top {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #1e40af;
-        }
-        .triangle-left {
-            position: absolute;
-            bottom: 20px;
-            left: 40px;
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #1e40af;
-        }
-        .triangle-right {
-            position: absolute;
-            bottom: 20px;
-            right: 40px;
-            font-weight: bold;
-            font-size: 1.5rem;
-            color: #1e40af;
-        }
-        .divider-hor {
-            position: absolute;
-            top: 90px;
-            left: 55px;
-            width: 90px;
-            height: 2px;
-            background-color: #93c5fd;
-        }
-        .divider-vert {
-            position: absolute;
-            bottom: 10px;
-            left: 100px;
-            width: 2px;
-            height: 70px;
-            background-color: #93c5fd;
-        }
-        .hidden { display: none; }
-        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .slide-up { animation: slideUp 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        /* Markdown Styles */
-        .prose p { margin-bottom: 0.5em; }
-        .prose ul { list-style-type: disc; padding-right: 1.5em; margin-bottom: 0.5em; }
-        .prose strong { color: #1e3a8a; }
-        .prose code { direction: ltr; display: inline-block; background: #f3f4f6; padding: 2px 4px; rounded: 4px; font-family: monospace; }
 
-        /* Quiz Toggle Switch */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #2563eb;
+        /* حركات الانسيابية (Animations) */
+        .accordion-content {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #2563eb;
+        .accordion-content.open {
+            max-height: 5000px;
+            opacity: 1;
+            border-top: 1px solid #f3f4f6;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen pb-24">
+<body class="bg-slate-100 min-h-screen text-slate-800" data-print-title="حلول واجب سيف علي - برمجة C++">
 
-    <!-- Header -->
-    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center max-w-md">
-            <div>
-                <h1 class="text-xl font-bold">أسس الهندسة الكهربائية</h1>
-                <p class="text-xs opacity-80">الفصل الأول 2025-2026</p>
-            </div>
+    <!-- شريط الرأس (Header) -->
+    <div class="sticky top-0 z-20 bg-gray-900 border-b border-gray-800 shadow-md print-hidden">
+        <div class="max-w-4xl mx-auto p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            
             <div class="flex items-center gap-3">
-                <button onclick="openSettings()" class="bg-white/20 p-2 rounded-full backdrop-blur-sm hover:bg-white/30 transition text-xs">
-                    <i class="fas fa-cog text-white"></i>
-                </button>
-                <div class="bg-white/20 p-2 rounded-full backdrop-blur-sm">
-                    <i class="fas fa-bolt text-yellow-300 text-xl"></i>
+                <div class="bg-yellow-500 p-2 rounded-lg text-gray-900 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
+                    <i data-lucide="code" class="w-6 h-6 font-bold"></i>
+                </div>
+                <div>
+                    <h1 id="main-title" class="text-xl md:text-2xl font-bold text-white">حلول واجب سيف علي</h1>
+                    <p id="sub-title" class="text-sm text-gray-400 font-medium mt-1 flex items-center gap-1">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>
+                        جاهز للشرح الشفوي والمناقشة
+                    </p>
                 </div>
             </div>
+            
+            <div class="flex bg-gray-800 p-1 rounded-lg border border-gray-700 items-center flex-wrap justify-center gap-1">
+                <button onclick="window.print()" class="flex items-center gap-1 px-3 py-2 rounded-md font-bold transition-all text-sm text-blue-400 hover:text-blue-300 hover:bg-gray-700" title="Print / PDF">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">PDF</span>
+                </button>
+                <button onclick="exportWord()" class="flex items-center gap-1 px-3 py-2 rounded-md font-bold transition-all text-sm text-green-400 hover:text-green-300 hover:bg-gray-700" title="Export Word">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span class="hidden md:inline" id="btn-word-text">Word</span>
+                </button>
+                
+                <div class="w-px h-6 bg-gray-600 mx-1 md:mx-2"></div>
+
+                <button id="btn-ar" onclick="setLanguage('ar')" class="flex items-center gap-2 px-3 md:px-4 py-2 rounded-md font-bold transition-all text-sm bg-yellow-500 text-gray-900 shadow-sm">
+                    <i data-lucide="languages" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">العربية + الشرح</span>
+                    <span class="sm:hidden">عربي</span>
+                </button>
+                <button id="btn-en" onclick="setLanguage('en')" class="flex items-center gap-2 px-3 md:px-4 py-2 rounded-md font-bold transition-all text-sm text-gray-400 hover:text-white">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">English (Answers)</span>
+                    <span class="sm:hidden">EN</span>
+                </button>
+            </div>
+
         </div>
-    </header>
+    </div>
 
-    <!-- Main Content Area -->
-    <main class="container mx-auto p-4 max-w-md">
+    <!-- المحتوى الرئيسي -->
+    <div class="max-w-4xl mx-auto p-4 md:p-6 space-y-6 mt-4 pb-20">
 
-        <!-- SECTION: STUDY (المراجعة) -->
-        <section id="study-section" class="fade-in">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 border-r-4 border-blue-500 pr-2">ملخص القوانين</h2>
-            
-            <!-- Ohm's Law Card -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 mb-4 border border-gray-100">
-                <h3 class="font-bold text-blue-600 mb-2">قانون أوم (Ohm's Law)</h3>
-                <div class="triangle-container mb-4">
-                    <div class="triangle-bg"></div>
-                    <div class="triangle-top">V</div>
-                    <div class="triangle-left">I</div>
-                    <div class="triangle-right">R</div>
-                    <div class="divider-hor"></div>
-                    <div class="divider-vert"></div>
-                </div>
-                <div class="text-center text-sm bg-blue-50 p-3 rounded-lg text-gray-700 border border-blue-100">
-                    <p class="mb-1"><strong>V = I × R</strong> (الفولتية)</p>
-                    <p class="mb-1"><strong>I = V / R</strong> (التيار)</p>
-                    <p><strong>R = V / I</strong> (المقاومة)</p>
-                </div>
-            </div>
-
-            <!-- Power Law Card -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 mb-4 border border-gray-100">
-                <h3 class="font-bold text-green-600 mb-2">القدرة (Power)</h3>
-                <div class="triangle-container mb-4">
-                    <div class="triangle-bg" style="border-bottom-color: #dcfce7;"></div>
-                    <div class="triangle-top text-green-800" style="color:#166534">P</div>
-                    <div class="triangle-left text-green-800" style="color:#166534">V</div>
-                    <div class="triangle-right text-green-800" style="color:#166534">I</div>
-                    <div class="divider-hor" style="background-color: #86efac;"></div>
-                    <div class="divider-vert" style="background-color: #86efac;"></div>
-                </div>
-                <div class="text-center text-sm bg-green-50 p-3 rounded-lg text-gray-700 border border-green-100">
-                    <p><strong>P = V × I</strong></p>
-                    <p class="text-xs text-gray-500 mt-1">1 hp = 746 Watt</p>
-                </div>
-            </div>
-
-            <!-- Other Formulas -->
-            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4 mb-4 border border-gray-100">
-                <h3 class="font-bold text-purple-600 mb-2">قوانين أخرى هامة</h3>
-                <ul class="space-y-2 text-sm">
-                    <li class="flex justify-between border-b pb-2">
-                        <span class="text-gray-600">الشحنة (Charge)</span>
-                        <span class="font-mono font-bold text-purple-700 dir-ltr">Q = I × t</span>
-                    </li>
-                    <li class="flex justify-between border-b pb-2">
-                        <span class="text-gray-600">القوة (Force)</span>
-                        <span class="font-mono font-bold text-purple-700 dir-ltr">F = m × a</span>
-                    </li>
-                    <li class="flex justify-between border-b pb-2">
-                        <span class="text-gray-600">الشغل (Work)</span>
-                        <span class="font-mono font-bold text-purple-700 dir-ltr">W = F × s</span>
-                    </li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- SECTION: CALCULATOR (الحاسبة) -->
-        <section id="calc-section" class="hidden fade-in">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 border-r-4 border-green-500 pr-2">حاسبة القوانين</h2>
-            
-            <div class="bg-white rounded-xl shadow-md p-5 border border-gray-100">
-                <label class="block text-sm font-bold text-gray-700 mb-2">ماذا تريد أن تحسب؟</label>
-                <div class="relative">
-                    <select id="calc-type" class="w-full p-3 pl-10 border rounded-xl bg-gray-50 mb-4 appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700" onchange="updateCalcInputs()">
-                        <option value="v">الفولتية (V)</option>
-                        <option value="i">التيار (I)</option>
-                        <option value="r">المقاومة (R)</option>
-                        <option value="p">القدرة (P)</option>
-                        <option value="q">الشحنة (Q)</option>
-                        <option value="f">القوة (F)</option>
-                    </select>
-                    <div class="absolute left-3 top-3.5 text-gray-500 pointer-events-none">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-
-                <!-- Dynamic Inputs -->
-                <div id="inputs-container" class="space-y-3">
-                    <!-- Injected via JS -->
-                </div>
-
-                <button onclick="calculate()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl mt-5 shadow-lg shadow-green-200 transition transform active:scale-95">
-                    احسب النتيجة
-                </button>
-
-                <!-- Result -->
-                <div id="result-box" class="hidden mt-6 bg-green-50 border border-green-200 p-5 rounded-xl text-center slide-up">
-                    <span class="text-gray-600 block text-sm mb-1">النتيجة هي:</span>
-                    <div class="flex items-center justify-center gap-2 mb-3">
-                        <span id="calc-result" class="text-3xl font-bold text-green-700">0</span>
-                        <span id="calc-unit" class="text-xl font-bold text-green-600 opacity-80">Unit</span>
-                    </div>
-                    
-                    <!-- GEMINI BUTTON -->
-                    <button onclick="explainWithGemini()" class="w-full bg-white text-indigo-600 border border-indigo-200 text-sm py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-50 transition font-semibold">
-                        <i class="fas fa-magic"></i> اشرح الخطوات مع AI
-                    </button>
-                </div>
-
-                <!-- Explanation Box -->
-                <div id="explanation-box" class="hidden mt-4 bg-indigo-50 border border-indigo-200 p-4 rounded-xl text-sm text-gray-800 prose slide-up" dir="rtl">
-                    <!-- AI Content here -->
-                </div>
-                <div id="explanation-loading" class="hidden mt-4 text-center text-indigo-600 py-4">
-                    <i class="fas fa-circle-notch fa-spin text-2xl mb-2"></i>
-                    <p class="text-xs font-medium">جاري كتابة الشرح...</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION: QUIZ (الاختبار) -->
-        <section id="quiz-section" class="hidden fade-in">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-bold text-gray-800 border-r-4 border-red-500 pr-2">اختبار (Quiz)</h2>
-                
-                <!-- Translation Toggle -->
-                <button onclick="toggleTranslation()" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition" id="translate-btn">
-                    <i class="fas fa-language text-blue-500 text-lg"></i>
-                    <span id="trans-text" class="text-xs font-bold">ترجمة: إيقاف</span>
-                </button>
-            </div>
-            
-            <div id="quiz-container" class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden relative min-h-[400px]">
-                
-                <!-- Header / Progress -->
-                <div class="bg-gray-50 p-4 border-b border-gray-100">
-                    <div class="flex justify-between text-xs font-bold text-gray-500 mb-2">
-                        <span id="question-count">سؤال 1 من 7</span>
-                        <span id="score-display" class="bg-red-100 text-red-600 px-2 py-0.5 rounded-md">النقاط: 0</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
-                        <div id="progress-bar" class="bg-red-500 h-full rounded-full transition-all duration-500" style="width: 10%"></div>
-                    </div>
-                </div>
-
-                <!-- Question Body -->
-                <div id="question-card" class="p-5">
-                    <h3 id="question-text" class="text-lg font-bold text-gray-800 mb-6 leading-relaxed" style="direction: ltr;">
-                        Loading...
-                    </h3>
-                    
-                    <div id="options-container" class="space-y-3">
-                        <!-- Options injected via JS -->
-                    </div>
-                </div>
-
-                <!-- Feedback Area (Overlay) -->
-                <div id="feedback" class="hidden absolute bottom-0 left-0 right-0 p-4 bg-white border-t shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] slide-up z-10">
-                    <div id="feedback-content" class="text-center font-bold mb-3"></div>
-                    <button id="next-btn" onclick="nextQuestion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold shadow-md transition">
-                        السؤال التالي
-                    </button>
-                </div>
-
-                <!-- Final Score Screen -->
-                <div id="final-screen" class="hidden absolute inset-0 bg-white flex flex-col items-center justify-center p-6 text-center z-20">
-                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
-                        <span class="text-4xl">🏆</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">أحسنت!</h3>
-                    <p class="text-gray-500 mb-6 text-sm">لقد أنهيت الاختبار بنجاح.</p>
-                    
-                    <div class="bg-gray-50 rounded-xl p-6 mb-8 w-full">
-                        <div class="text-sm text-gray-500 mb-1">النتيجة النهائية</div>
-                        <div class="text-5xl font-bold text-blue-600"><span id="final-score">0</span><span class="text-2xl text-gray-400">/7</span></div>
-                    </div>
-                    
-                    <button onclick="restartQuiz()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition">
-                        إعادة الاختبار
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION: AI TUTOR (المعلم الذكي) -->
-        <section id="ai-section" class="hidden fade-in">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-bold text-gray-800 border-r-4 border-purple-500 pr-2">المعلم الذكي ✨</h2>
-                <button onclick="clearChat()" class="text-xs text-red-500 font-bold bg-red-50 px-2 py-1 rounded hover:bg-red-100">مسح المحادثة</button>
-            </div>
-            
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 flex flex-col h-[65vh]">
-                <!-- Chat Area -->
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 rounded-t-xl scroll-smooth">
-                    <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shadow-sm shrink-0"><i class="fas fa-robot"></i></div>
-                        <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-sm leading-relaxed text-gray-700">
-                            أهلاً بك يا هندسة! أنا معلمك الذكي. اسألني أي سؤال عن المادة وسأشرحه لك ببساطة. ✨
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input Area -->
-                <div class="p-3 bg-white border-t rounded-b-xl flex gap-2 items-end">
-                    <textarea id="ai-input" placeholder="اكتب سؤالك هنا..." class="flex-1 p-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm resize-none h-12 max-h-24" onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendToAI(); }"></textarea>
-                    <button onclick="sendToAI()" class="bg-purple-600 text-white w-12 h-12 rounded-xl hover:bg-purple-700 transition shadow-md flex items-center justify-center shrink-0">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="mt-4 flex gap-2 overflow-x-auto pb-2 no-scrollbar">
-                <button onclick="quickAsk('اشرح لي قانون أوم بمثال')" class="whitespace-nowrap bg-white text-purple-700 px-4 py-2 rounded-full text-xs font-bold border border-purple-100 shadow-sm hover:bg-purple-50 transition">💡 شرح قانون أوم</button>
-                <button onclick="quickAsk('ما الفرق بين AC و DC؟')" class="whitespace-nowrap bg-white text-purple-700 px-4 py-2 rounded-full text-xs font-bold border border-purple-100 shadow-sm hover:bg-purple-50 transition">⚡ الفرق بين AC و DC</button>
-                <button onclick="quickAsk('كيف أحسب القدرة؟')" class="whitespace-nowrap bg-white text-purple-700 px-4 py-2 rounded-full text-xs font-bold border border-purple-100 shadow-sm hover:bg-purple-50 transition">🔋 حساب القدرة</button>
-            </div>
-        </section>
-
-        <!-- API SETTINGS MODAL -->
-        <div id="settings-modal" class="hidden fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-            <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm fade-in">
-                <h3 class="text-lg font-bold text-gray-800 mb-2">إعدادات الذكاء الاصطناعي</h3>
-                <p class="text-sm text-gray-500 mb-4">لجعل "المعلم الذكي" يعمل، يرجى إدخال مفتاح (Gemini API Key) الخاص بك. سيتم حفظه في جهازك فقط.</p>
-                <input type="password" id="api-key-input" placeholder="ألصق مفتاح API هنا..." class="w-full p-3 border rounded-lg bg-gray-50 mb-4 focus:ring-2 focus:ring-blue-500 outline-none text-sm dir-ltr">
-                <div class="flex gap-2">
-                    <button onclick="saveApiKey()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700">حفظ وتشغيل</button>
-                    <button onclick="closeSettings()" class="px-4 py-2 text-gray-500 hover:bg-gray-100 rounded-lg">إلغاء</button>
-                </div>
-                <p class="text-xs text-gray-400 mt-4 text-center">يمكنك الحصول على مفتاح مجاني من <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-500 underline">Google AI Studio</a></p>
+        <!-- نصيحة ذهبية -->
+        <div class="bg-blue-50 border border-blue-200 p-5 rounded-xl mb-6 shadow-sm flex gap-4 items-start print-hidden">
+            <i data-lucide="lightbulb" class="text-blue-600 shrink-0 mt-1 w-7 h-7"></i>
+            <div>
+                <h3 id="tip-title" class="text-blue-900 font-bold text-lg mb-1">نصيحة ذهبية</h3>
+                <p id="tip-body" class="text-blue-800 font-medium leading-relaxed">
+                    الأساتذة يركزون على الفهم أكثر من الحفظ. افتح كل سؤال واقرأ (شلون تشرحها للأستاذ)، هذا المربع الأصفر هو السر اللي راح يخليك تجاوب بثقة وتاخذ درجة كاملة.
+                </p>
             </div>
         </div>
 
-        <!-- CREDITS FOOTER -->
-        <footer class="text-center text-xs text-gray-400 mt-8 mb-2">
-            <p>تم تطويره من قبل <a href="https://t.me/saifm388" target="_blank" class="text-blue-500 font-bold hover:underline">سيف علي <i class="fab fa-telegram"></i></a></p>
-        </footer>
+        <!-- حاوية الأسئلة -->
+        <div id="questions-container" class="space-y-4">
+            <!-- سيتم توليد الأسئلة هنا بواسطة JavaScript -->
+        </div>
 
-    </main>
+    </div>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-gray-100 h-20 flex justify-around items-center z-50 px-2 pb-2 max-w-md mx-auto">
-        <button onclick="switchTab('study')" id="tab-study" class="flex flex-col items-center justify-center w-full h-full text-blue-600 active-tab transition pt-2 group">
-            <div class="mb-1 p-1 rounded-full group-hover:bg-blue-50 transition"><i class="fas fa-book-open text-lg"></i></div>
-            <span class="text-[10px] font-bold">مراجعة</span>
-        </button>
-        <button onclick="switchTab('calc')" id="tab-calc" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-green-600 transition pt-2 group">
-            <div class="mb-1 p-1 rounded-full group-hover:bg-green-50 transition"><i class="fas fa-calculator text-lg"></i></div>
-            <span class="text-[10px] font-bold">حاسبة</span>
-        </button>
-        <button onclick="switchTab('ai')" id="tab-ai" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-purple-600 transition pt-2 group">
-            <div class="mb-1 p-1 rounded-full group-hover:bg-purple-50 transition relative">
-                <i class="fas fa-robot text-xl"></i>
-                <span class="absolute top-0 right-0 w-2 h-2 bg-purple-500 rounded-full animate-ping"></span>
-            </div>
-            <span class="text-[10px] font-bold">المعلم الذكي</span>
-        </button>
-        <button onclick="switchTab('quiz')" id="tab-quiz" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-red-600 transition pt-2 group">
-            <div class="mb-1 p-1 rounded-full group-hover:bg-red-50 transition"><i class="fas fa-clipboard-question text-lg"></i></div>
-            <span class="text-[10px] font-bold">اختبار</span>
-        </button>
-    </nav>
-
+    <!-- كود JavaScript للبرمجة والتفاعل -->
     <script>
-        // --- GEMINI API & HISTORY MANAGEMENT ---
-        let environmentApiKey = ""; // Used inside canvas/preview
-        let chatHistory = []; // Stores conversation context
-
-        // Initialize Chat History
-        function initChat() {
-            chatHistory = []; // Reset history
-        }
-
-        // Settings Modal Logic
-        function openSettings() {
-            document.getElementById('settings-modal').classList.remove('hidden');
-            const storedKey = localStorage.getItem('gemini_api_key');
-            if(storedKey) document.getElementById('api-key-input').value = storedKey;
-        }
-
-        function closeSettings() {
-            document.getElementById('settings-modal').classList.add('hidden');
-        }
-
-        function saveApiKey() {
-            const key = document.getElementById('api-key-input').value.trim();
-            if(key) {
-                localStorage.setItem('gemini_api_key', key);
-                alert("تم حفظ المفتاح بنجاح! ✅");
-                closeSettings();
-            } else {
-                alert("الرجاء إدخال مفتاح صحيح");
-            }
-        }
-
-        async function callGemini(inputData, systemInstruction = "") {
-            // Priority: 1. LocalStorage (User's key) 2. Environment (Preview key)
-            let finalKey = localStorage.getItem('gemini_api_key') || environmentApiKey;
-
-            if (!finalKey) {
-                openSettings(); // Ask user for key if missing
-                return "⚠️ الرجاء إدخال مفتاح API في الإعدادات لتفعيل المعلم الذكي.";
-            }
-
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${finalKey}`;
-            
-            // Construct Payload: Handle both simple text and history array
-            let contentsPayload = [];
-            if (Array.isArray(inputData)) {
-                contentsPayload = inputData; // It's history
-            } else {
-                contentsPayload = [{ parts: [{ text: inputData }] }]; // It's a single prompt
-            }
-
-            const payload = {
-                contents: contentsPayload,
-                systemInstruction: { parts: [{ text: systemInstruction }] }
-            };
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    if(response.status === 400 || response.status === 403) {
-                         // Likely API Key issue
-                         localStorage.removeItem('gemini_api_key'); // Clear bad key
-                         return "⚠️ مفتاح API غير صحيح أو منتهي الصلاحية. يرجى التحقق من الإعدادات.";
-                    }
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || "عذراً، لم أستطع فهم السؤال.";
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                return "حدث خطأ في الاتصال. تأكد من الإنترنت ومفتاح API.";
-            }
-        }
-
-        // --- NAVIGATION LOGIC ---
-        function switchTab(tabId) {
-            document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId + '-section').classList.remove('hidden');
-
-            const tabs = ['study', 'calc', 'quiz', 'ai'];
-            const colors = {
-                'study': 'text-blue-600', 
-                'calc': 'text-green-600', 
-                'quiz': 'text-red-600',
-                'ai': 'text-purple-600'
-            };
-            
-            tabs.forEach(t => {
-                const btn = document.getElementById('tab-' + t);
-                btn.className = `flex flex-col items-center justify-center w-full h-full transition pt-2 group ${t === tabId ? 'active-tab ' + colors[t] : 'text-gray-400'}`;
-            });
-
-            // Scroll to bottom if AI tab
-            if(tabId === 'ai') {
-                const chatBox = document.getElementById('chat-messages');
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-        }
-
-        // --- AI TUTOR LOGIC ---
-        function quickAsk(text) {
-            document.getElementById('ai-input').value = text;
-            sendToAI();
-        }
-
-        function clearChat() {
-            initChat();
-            const chatBox = document.getElementById('chat-messages');
-            chatBox.innerHTML = `
-                <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shadow-sm shrink-0"><i class="fas fa-robot"></i></div>
-                    <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-sm leading-relaxed text-gray-700">
-                        أهلاً بك يا هندسة! أنا معلمك الذكي. اسألني أي سؤال عن المادة وسأشرحه لك ببساطة. ✨
-                    </div>
-                </div>
-            `;
-        }
-
-        async function sendToAI() {
-            const inputEl = document.getElementById('ai-input');
-            const chatBox = document.getElementById('chat-messages');
-            const userText = inputEl.value.trim();
-
-            if (!userText) return;
-
-            // 1. Add User Message to UI
-            chatBox.innerHTML += `
-                <div class="flex items-start gap-3 flex-row-reverse fade-in">
-                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 shrink-0"><i class="fas fa-user"></i></div>
-                    <div class="bg-purple-600 text-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm leading-relaxed">
-                        ${userText}
-                    </div>
-                </div>
-            `;
-            inputEl.value = "";
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // 2. Add User Message to History
-            chatHistory.push({ role: "user", parts: [{ text: userText }] });
-
-            // 3. Show Loading
-            const loadingId = "loading-" + Date.now();
-            chatBox.innerHTML += `
-                <div id="${loadingId}" class="flex items-start gap-3 fade-in">
-                    <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0"><i class="fas fa-robot"></i></div>
-                    <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-sm text-gray-500">
-                        <i class="fas fa-circle-notch fa-spin"></i> جاري التفكير...
-                    </div>
-                </div>
-            `;
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            // 4. Call API with HISTORY
-            const systemPrompt = "أنت مدرس مساعد لمادة أسس الهندسة الكهربائية للمرحلة الأولى. أجب باللغة العربية بأسلوب مبسط ومشجع. استخدم الأمثلة العملية. اجعل إجاباتك قصيرة ومفيدة للطالب. استخدم التنسيق Markdown للعناوين والقوائم.";
-            const aiResponseText = await callGemini(chatHistory, systemPrompt);
-
-            // 5. Remove Loading & Add AI Response
-            document.getElementById(loadingId).remove();
-            
-            // Check if it's an error message (starts with warning icon)
-            const isError = aiResponseText.startsWith("⚠️") || aiResponseText.includes("خطأ");
-            
-            if (!isError) {
-                // Add AI response to history only if successful
-                chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
-            }
-
-            chatBox.innerHTML += `
-                <div class="flex items-start gap-3 fade-in">
-                    <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 shrink-0"><i class="fas fa-robot"></i></div>
-                    <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-sm border border-gray-100 text-sm prose leading-relaxed text-gray-700 w-full overflow-hidden">
-                        ${marked.parse(aiResponseText)}
-                    </div>
-                </div>
-            `;
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        // --- CALCULATOR LOGIC ---
-        const calcConfig = {
-            'v': { inputs: ['I (Ampere)', 'R (Ohm)'], unit: 'V' },
-            'i': { inputs: ['V (Volt)', 'R (Ohm)'], unit: 'A' },
-            'r': { inputs: ['V (Volt)', 'I (Ampere)'], unit: 'Ω' },
-            'p': { inputs: ['V (Volt)', 'I (Ampere)'], unit: 'W' },
-            'q': { inputs: ['I (Ampere)', 't (Seconds)'], unit: 'C' },
-            'f': { inputs: ['m (kg)', 'a (m/s²)'], unit: 'N' }
-        };
-
-        let lastCalcData = null;
-
-        function updateCalcInputs() {
-            const type = document.getElementById('calc-type').value;
-            const container = document.getElementById('inputs-container');
-            const config = calcConfig[type];
-            
-            container.innerHTML = `
-                <input type="number" id="input1" placeholder="${config.inputs[0]}" class="w-full p-4 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-200 outline-none transition">
-                <input type="number" id="input2" placeholder="${config.inputs[1]}" class="w-full p-4 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-green-200 outline-none transition">
-            `;
-            document.getElementById('result-box').classList.add('hidden');
-            document.getElementById('explanation-box').classList.add('hidden');
-        }
-
-        function calculate() {
-            const type = document.getElementById('calc-type').value;
-            const v1 = parseFloat(document.getElementById('input1').value);
-            const v2 = parseFloat(document.getElementById('input2').value);
-            
-            if (isNaN(v1) || isNaN(v2)) {
-                alert('الرجاء إدخال أرقام صحيحة');
-                return;
-            }
-
-            let result = 0;
-            if (type === 'v') result = v1 * v2; 
-            if (type === 'i') result = v1 / v2; 
-            if (type === 'r') result = v1 / v2; 
-            if (type === 'p') result = v1 * v2; 
-            if (type === 'q') result = v1 * v2; 
-            if (type === 'f') result = v1 * v2; 
-
-            lastCalcData = { type, v1, v2, result, inputs: calcConfig[type].inputs };
-
-            document.getElementById('calc-result').innerText = result % 1 !== 0 ? result.toFixed(2) : result;
-            document.getElementById('calc-unit').innerText = calcConfig[type].unit;
-            document.getElementById('result-box').classList.remove('hidden');
-            document.getElementById('explanation-box').classList.add('hidden');
-        }
-
-        async function explainWithGemini() {
-            if (!lastCalcData) return;
-
-            const box = document.getElementById('explanation-box');
-            const loader = document.getElementById('explanation-loading');
-            
-            loader.classList.remove('hidden');
-            box.classList.add('hidden');
-
-            const prompt = `
-                اشرح لطالب سنة أولى هندسة كيف قمنا بحساب النتيجة التالية خطوة بخطوة.
-                نوع الحساب: ${lastCalcData.type.toUpperCase()}
-                القيمة الأولى (${lastCalcData.inputs[0]}): ${lastCalcData.v1}
-                القيمة الثانية (${lastCalcData.inputs[1]}): ${lastCalcData.v2}
-                النتيجة: ${lastCalcData.result}
-                اشرح القانون المستخدم، وعوض بالأرقام، ثم اشرح المعنى الفيزيائي البسيط للنتيجة.
-            `;
-
-            const response = await callGemini(prompt, "أنت مدرس رياضيات وفيزياء للمرحلة الجامعية الأولى.");
-            
-            box.innerHTML = marked.parse(response);
-            loader.classList.add('hidden');
-            box.classList.remove('hidden');
-        }
-
-        updateCalcInputs();
-
-        // --- QUIZ LOGIC WITH TRANSLATION ---
-        const questions = [
+        // --- بيانات الأسئلة ---
+        const assignmentData = [
             {
-                q: "Q1: If a current of 5 A flows for 3 minutes, calculate the charge.",
-                q_ar: "س1: إذا سري تيار مقداره 5 أمبير لمدة 3 دقائق، احسب الشحنة.",
-                a: ["15 C", "150 C", "900 C", "60 C"],
-                a_ar: ["15 كولوم", "150 كولوم", "900 كولوم", "60 كولوم"],
-                correct: 2
+                id: 1,
+                q_en: "Q1: What do you mean by program?",
+                q_ar: "السؤال الأول: ماذا تقصد بالبرنامج؟",
+                ans_en: "A program is a set of logical instructions written in a programming language that a computer can execute to perform a specific task or solve a problem.",
+                ans_ar: "البرنامج هو مجموعة من التعليمات والأوامر المنطقية المكتوبة بلغة برمجة، والتي يمكن للحاسوب تنفيذها لأداء مهمة معينة أو حل مشكلة.",
+                explanation: "إذا سألك الأستاذ كُله: أستاذ البرنامج ببساطة هو مجموعة أوامر نكتبها بلغة يفهمها الحاسوب (مثل C++)، حتى نخليه يسوي شغلة معينة إحنا نريدها، مثل آلة حاسبة أو لعبة أو نظام."
             },
             {
-                q: "Q2: The unit of Electric Current is:",
-                q_ar: "س2: وحدة قياس التيار الكهربائي هي:",
-                a: ["Volt (V)", "Watt (W)", "Ampere (A)", "Joule (J)"],
-                a_ar: ["فولت (V)", "واط (W)", "أمبير (A)", "جول (J)"],
-                correct: 2
+                id: 2,
+                q_en: "Q2: Why C++ language becomes quite popular?",
+                q_ar: "السؤال الثاني: لماذا أصبحت لغة C++ شائعة ومشهورة جداً؟",
+                ans_en: "1. It supports all features of both structured programming and Object-Oriented Programming (OOP).\n2. It focuses on function and class templates for handling various data types.",
+                ans_ar: "1. لأنها تدعم جميع ميزات البرمجة الهيكلية (Structured Programming) والبرمجة كائنية التوجه (OOP).\n2. تركيزها على قوالب الدوال والفئات (Templates) للتعامل مع أنواع البيانات.",
+                explanation: "إذا سألك كُله: أستاذ لأن هاي اللغة جمعت بين الماضي والحاضر؛ يعني تدعم البرمجة الهيكلية القديمة، وبنفس الوقت تدعم الـ OOP (البرمجة الكائنية) اللي تعتمد على الكلاسات، وبيها (Templates) تسهل علينا ترتيب البيانات."
             },
             {
-                q: "Q3: Force required to give 10kg mass an acceleration of 5 m/s²:",
-                q_ar: "س3: القوة المطلوبة لإعطاء كتلة 10 كغم تعجيلاً قدره 5 م/ث²:",
-                a: ["50 N", "2 N", "0.5 N", "500 N"],
-                a_ar: ["50 نيوتن", "2 نيوتن", "0.5 نيوتن", "500 نيوتن"],
-                correct: 0
+                id: 3,
+                q_en: "Q3: Talk briefly about C++ program development process?",
+                q_ar: "السؤال الثالث: تحدث باختصار عن عملية تطوير برنامج C++ (مراحل الـ PDP)؟",
+                ans_en: "The C++ program development process consists of 6 phases:\n1. Edit: Typing the source code (.cpp).\n2. Pre-Processor: Preparing files before compilation.\n3. Compilation: Converting source code to object code.\n4. Linking: Combining object code with library functions.\n5. Loading: Loading the program into memory.\n6. CPU: Executing the instructions.",
+                ans_ar: "تمر عملية التطوير بـ 6 مراحل:\n1. التحرير (Edit): كتابة الكود وحفظه.\n2. المعالج المسبق (Pre-processor): تهيئة الملفات للترجمة.\n3. الترجمة (Compilation): تحويل الكود إلى لغة الآلة (Object-code).\n4. الربط (Linking): ربط الكود بمكتبات اللغة.\n5. التحميل (Loading): تحميل البرنامج للذاكرة RAM.\n6. التنفيذ (CPU): المعالج ينفذ البرنامج.",
+                explanation: "اشرحها للأستاذ كقصة: أستاذ أول شي نكتب الكود (Edit)، بعدين المعالج المسبق يرتبه (Pre-processor)، المترجم يحوله لصفر وواحد (Compilation)، الرابط يجيب المكتبات الجاهزة يربطها وياه (Linking)، نظام التشغيل يصعده للرام (Loading)، وأخيراً المعالج (CPU) ينفذه ونشوف النتيجة."
             },
             {
-                q: "Q4: According to Ohm's Law, R =",
-                q_ar: "س4: حسب قانون أوم، المقاومة (R) تساوي:",
-                a: ["V × I", "V / I", "I / V", "V + I"],
-                a_ar: ["V × I", "V / I", "I / V", "V + I"],
-                correct: 1
+                id: '4a',
+                isAlgo: true,
+                q_en: "Q4 (a): Write an algorithm and flowchart to Sum the even numbers for n numbers.",
+                q_ar: "السؤال الرابع (A): خوارزمية ومخطط انسيابي لجمع الأرقام الزوجية من أصل n من الأرقام.",
+                algo_en: "1. Start\n2. Read n (total numbers count)\n3. Set Sum = 0, Counter = 0\n4. Read a number (x)\n5. If (x % 2 == 0) then Sum = Sum + x\n6. Counter = Counter + 1\n7. If (Counter < n) go to step 4\n8. Print Sum\n9. Stop",
+                algo_ar: "1. البداية.\n2. اقرأ n (عدد الأرقام الكلي).\n3. اجعل المجموع (Sum = 0) والعداد (Counter = 0).\n4. اقرأ رقم (x).\n5. إذا كان (x % 2 == 0) إذن Sum = Sum + x.\n6. زِد العداد Counter = Counter + 1.\n7. إذا كان (Counter < n) ارجع للخطوة 4.\n8. اطبع المجموع Sum.\n9. النهاية.",
+                explanation: "الفكرة هنا: الأستاذ يريدك تقرأ (n) من الأرقام (يعني المستخدم يحدد كم رقم يريد يدخل). نفرض مجموعنا صفر والعداد صفر. نظل نقرأ أرقام، الرقم اللي باقي قسمته على 2 يساوي صفر (يعني زوجي) نجمعه وي المجموع، ونزيد العداد. من يوصل العداد للرقم n نوقف ونطبع المجموع.",
+                flowchartHtml: `
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded-full bg-red-50 border-red-300 text-red-800">Start</div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="mx-auto w-52 flex justify-center relative"><div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 bg-blue-50 border-blue-300 text-blue-800 transform skew-x-[-15deg]"><span class="transform skew-x-[15deg] block">Read n</span></div></div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">Sum = 0, C = 0</div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center">
+                            <div class="border-t-2 border-l-2 border-gray-400 w-16 h-32 -mt-16 mr-2 rounded-tl-lg invisible"></div>
+                            <div class="flex flex-col items-center">
+                                <div class="mx-auto w-52 flex justify-center relative"><div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 bg-blue-50 border-blue-300 text-blue-800 transform skew-x-[-15deg]"><span class="transform skew-x-[15deg] block">Read x</span></div></div>
+                                <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                                <div class="mx-auto w-32 h-32 relative my-4 flex items-center justify-center"><div class="absolute inset-0 bg-yellow-50 border-2 border-yellow-400 transform rotate-45 shadow-sm"></div><div class="relative z-10 font-bold text-yellow-900 text-sm text-center px-2">Is x % 2 == 0 ?</div></div>
+                                <div class="flex w-full justify-between px-12 relative"><span class="absolute -left-6 top-1 text-xs font-bold text-red-600">No</span><span class="absolute -right-8 top-1 text-xs font-bold text-green-600">Yes</span></div>
+                                <div class="flex items-start w-full justify-center relative -mt-4">
+                                    <div class="w-1/2 h-8 border-l-2 border-t-2 border-gray-400 rounded-tl-lg"></div>
+                                    <div class="w-1/2 h-8 border-r-2 border-t-2 border-gray-400 rounded-tr-lg"></div>
+                                    <div class="absolute right-[-4rem] top-8"><div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">Sum = Sum + x</div></div>
+                                </div>
+                                <div class="h-16 w-0.5 bg-gray-400 mt-8 relative"><div class="absolute top-4 left-[-4.1rem] w-16 h-0.5 bg-gray-400"></div></div>
+                                <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">C = C + 1</div>
+                                <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                                <div class="mx-auto w-32 h-32 relative my-4 flex items-center justify-center"><div class="absolute inset-0 bg-yellow-50 border-2 border-yellow-400 transform rotate-45 shadow-sm"></div><div class="relative z-10 font-bold text-yellow-900 text-sm text-center px-2">Is C < n ?</div></div>
+                            </div>
+                            <div class="border-b-2 border-r-2 border-t-2 border-gray-400 w-16 h-[34rem] -mt-[14rem] ml-2 rounded-r-lg flex flex-col justify-end"><div class="w-full text-center text-xs font-bold text-green-600 mb-[32rem] bg-white">Yes</div></div>
+                        </div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <span class="text-xs font-bold text-red-600 ml-16 -mt-6 bg-white px-1">No</span>
+                        <div class="mx-auto w-52 flex justify-center relative"><div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 bg-blue-50 border-blue-300 text-blue-800 transform skew-x-[-15deg]"><span class="transform skew-x-[15deg] block">Print Sum</span></div></div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded-full bg-red-50 border-red-300 text-red-800">Stop</div>
+                    </div>`
             },
             {
-                q: "Q5: Prefix 'Milli' (m) means multiply by:",
-                q_ar: "س5: البادئة 'ملي' (m) تعني الضرب في:",
-                a: ["1000", "10^6", "10^-3", "10^-6"],
-                a_ar: ["1000", "10^6", "10^-3", "10^-6"],
-                correct: 2
+                id: '4b',
+                isAlgo: true,
+                q_en: "Q4 (b): Write an algorithm and flowchart to Display numbers from 0 to 10.",
+                q_ar: "السؤال الرابع (B): خوارزمية ومخطط لطباعة الأرقام من 0 إلى 10.",
+                algo_en: "1. Start\n2. Set i = 0\n3. Print i\n4. i = i + 1\n5. If (i <= 10) go to step 3\n6. Stop",
+                algo_ar: "1. البداية.\n2. اجعل المتغير (i = 0).\n3. اطبع i.\n4. زِد المتغير i = i + 1.\n5. إذا كان (i <= 10) ارجع للخطوة 3.\n6. النهاية.",
+                explanation: "هذا أسهل سؤال. الأستاذ يريد يطبع من صفر للعشرة. نبدي عدادنا من الصفر. نطبعه، ونزيده واحد. نسأل: هل العداد عبر الـ 10؟ إذا لا، نرجع نطبعه. من يعبر يوقف البرنامج.",
+                flowchartHtml: `
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded-full bg-red-50 border-red-300 text-red-800">Start</div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">i = 0</div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center">
+                            <div class="flex flex-col items-center">
+                                <div class="mx-auto w-52 flex justify-center relative"><div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 bg-blue-50 border-blue-300 text-blue-800 transform skew-x-[-15deg]"><span class="transform skew-x-[15deg] block">Print i</span></div></div>
+                                <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                                <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">i = i + 1</div>
+                                <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                                <div class="mx-auto w-32 h-32 relative my-4 flex items-center justify-center"><div class="absolute inset-0 bg-yellow-50 border-2 border-yellow-400 transform rotate-45 shadow-sm"></div><div class="relative z-10 font-bold text-yellow-900 text-sm text-center px-2">Is i <= 10 ?</div></div>
+                            </div>
+                            <div class="border-b-2 border-r-2 border-t-2 border-gray-400 w-12 h-[12rem] -mt-[2rem] ml-2 rounded-r-lg"><div class="w-full text-center text-xs font-bold text-green-600 mt-2 bg-white">Yes</div></div>
+                        </div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <span class="text-xs font-bold text-red-600 ml-16 -mt-6 bg-white px-1">No</span>
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded-full bg-red-50 border-red-300 text-red-800">Stop</div>
+                    </div>`
             },
             {
-                q: "Q6: 1 Horsepower (hp) equals:",
-                q_ar: "س6: واحد حصان ميكانيكي (hp) يساوي:",
-                a: ["1000 W", "746 W", "60 W", "360 W"],
-                a_ar: ["1000 واط", "746 واط", "60 واط", "360 واط"],
-                correct: 1
-            },
-            {
-                q: "Q7: Work (W) is calculated by:",
-                q_ar: "س7: يحسب الشغل (W) بواسطة القانون:",
-                a: ["Force × Distance", "Force × Time", "Power × Time", "Volt × Current"],
-                a_ar: ["القوة × المسافة", "القوة × الزمن", "القدرة × الزمن", "الفولتية × التيار"],
-                correct: 0
+                id: '4c',
+                isAlgo: true,
+                q_en: "Q4 (c): Write an algorithm and flowchart for The multiplication of 10 numbers.",
+                q_ar: "السؤال الرابع (C): خوارزمية ومخطط لضرب 10 أرقام.",
+                algo_en: "1. Start\n2. Set Product = 1, Counter = 0\n3. Read number (x)\n4. Product = Product * x\n5. Counter = Counter + 1\n6. If (Counter < 10) go to step 3\n7. Print Product\n8. Stop",
+                algo_ar: "1. البداية.\n2. اجعل ناتج الضرب (Product = 1) والعداد (Counter = 0).\n3. اقرأ رقم (x).\n4. اضرب الرقم بالناتج: Product = Product * x.\n5. زِد العداد Counter = Counter + 1.\n6. إذا كان (Counter < 10) ارجع للخطوة 3.\n7. اطبع الناتج Product.\n8. النهاية.",
+                explanation: "دير بالك هنا وتذكر هاي الحجاية: الأستاذ يشوفك فاهم لو لا من القيمة الابتدائية. بالجمع نخليها (0) حتى ميأثر. بس بالضرب لازم نخليها (1)، لأن أي رقم ينضرب بصفر يصير صفر ويفشل البرنامج. نقرأ 10 أرقام نضربهم واحد بالثاني ونطبع النتيجة بالنهاية.",
+                flowchartHtml: `
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded-full bg-red-50 border-red-300 text-red-800">Start</div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">Prod = 1, C = 0</div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center">
+                            <div class="flex flex-col items-center">
+                                <div class="mx-auto w-52 flex justify-center relative"><div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 bg-blue-50 border-blue-300 text-blue-800 transform skew-x-[-15deg]"><span class="transform skew-x-[15deg] block">Read x</span></div></div>
+                                <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                                <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">Prod = Prod * x</div>
+                                <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                                <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded bg-green-50 border-green-300 text-green-800">C = C + 1</div>
+                                <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                                <div class="mx-auto w-32 h-32 relative my-4 flex items-center justify-center"><div class="absolute inset-0 bg-yellow-50 border-2 border-yellow-400 transform rotate-45 shadow-sm"></div><div class="relative z-10 font-bold text-yellow-900 text-sm text-center px-2">Is C < 10 ?</div></div>
+                            </div>
+                            <div class="border-b-2 border-r-2 border-t-2 border-gray-400 w-12 h-[18rem] -mt-[2rem] ml-2 rounded-r-lg"><div class="w-full text-center text-xs font-bold text-green-600 mt-2 bg-white">Yes</div></div>
+                        </div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <span class="text-xs font-bold text-red-600 ml-16 -mt-6 bg-white px-1">No</span>
+                        <div class="mx-auto w-52 flex justify-center relative"><div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 bg-blue-50 border-blue-300 text-blue-800 transform skew-x-[-15deg]"><span class="transform skew-x-[15deg] block">Print Prod</span></div></div>
+                        <div class="flex flex-col items-center my-1"><div class="w-0.5 h-6 bg-gray-400"></div><i data-lucide="arrow-down" class="text-gray-400 w-4 h-4 -mt-1"></i></div>
+                        <div class="flex items-center justify-center text-center font-bold text-sm md:text-base border-2 shadow-sm px-4 py-2 w-48 rounded-full bg-red-50 border-red-300 text-red-800">Stop</div>
+                    </div>`
             }
         ];
 
-        let currentQ = 0;
-        let score = 0;
-        let answered = false;
-        let showArabic = false;
+        // --- حالة التطبيق ---
+        let currentLang = 'ar';
+        let openQuestionId = null;
 
-        function toggleTranslation() {
-            showArabic = !showArabic;
-            const btn = document.getElementById('translate-btn');
-            const txt = document.getElementById('trans-text');
+        // --- الدوال الرئيسية ---
+
+        function toggleQuestion(id) {
+            openQuestionId = openQuestionId === id ? null : id;
+            renderQuestions();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
             
-            if(showArabic) {
-                btn.classList.remove('bg-white', 'text-gray-600');
-                btn.classList.add('bg-blue-100', 'text-blue-700', 'border-blue-200');
-                txt.innerText = "ترجمة: تشغيل";
+            // تحديث واجهة المستخدم العامة
+            const isAr = lang === 'ar';
+            document.getElementById('html-root').setAttribute('dir', isAr ? 'rtl' : 'ltr');
+            document.getElementById('html-root').setAttribute('lang', lang);
+            
+            document.getElementById('main-title').innerText = isAr ? 'حلول واجب سيف علي' : 'Saif Ali Assignment';
+            document.getElementById('sub-title').innerHTML = `<i data-lucide="user-check" class="w-4 h-4"></i> ${isAr ? 'جاهز للشرح الشفوي والمناقشة' : 'Ready for Verbal Explanation'}`;
+            
+            document.getElementById('tip-title').innerText = isAr ? 'نصيحة ذهبية' : 'Golden Tip';
+            document.getElementById('tip-body').innerText = isAr ? 
+                "الأساتذة يركزون على الفهم أكثر من الحفظ. افتح كل سؤال واقرأ (شلون تشرحها للأستاذ)، هذا المربع الأصفر هو السر اللي راح يخليك تجاوب بثقة وتاخذ درجة كاملة." : 
+                "Professors value understanding over memorization. Make sure to read the explanation part so you can confidently answer any oral questions.";
+
+            // تحديث شكل الأزرار
+            const btnAr = document.getElementById('btn-ar');
+            const btnEn = document.getElementById('btn-en');
+            
+            if (isAr) {
+                btnAr.className = "flex items-center gap-2 px-3 md:px-4 py-2 rounded-md font-bold transition-all text-sm bg-yellow-500 text-gray-900 shadow-sm";
+                btnEn.className = "flex items-center gap-2 px-3 md:px-4 py-2 rounded-md font-bold transition-all text-sm text-gray-400 hover:text-white";
             } else {
-                btn.classList.add('bg-white', 'text-gray-600');
-                btn.classList.remove('bg-blue-100', 'text-blue-700', 'border-blue-200');
-                txt.innerText = "ترجمة: إيقاف";
-            }
-            renderQuestionText();
-        }
-
-        function loadQuestion() {
-            answered = false;
-            document.getElementById('feedback').classList.add('hidden');
-            renderQuestionText();
-            document.getElementById('progress-bar').style.width = `${((currentQ + 1) / questions.length) * 100}%`;
-        }
-
-        function renderQuestionText() {
-            const q = questions[currentQ];
-            const qText = showArabic ? q.q_ar : q.q;
-            const dir = showArabic ? 'rtl' : 'ltr';
-            const align = showArabic ? 'text-right' : 'text-left';
-            
-            const qEl = document.getElementById('question-text');
-            qEl.innerText = qText;
-            qEl.style.direction = dir;
-            qEl.className = `text-lg font-bold text-gray-800 mb-6 leading-relaxed ${align}`;
-
-            const optsContainer = document.getElementById('options-container');
-            if(answered) {
-                Array.from(optsContainer.children).forEach((btn, index) => {
-                    const optText = showArabic ? q.a_ar[index] : q.a[index];
-                    btn.innerHTML = `<span class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs mr-3 ml-2 font-bold text-gray-600 shrink-0 border border-gray-200">${String.fromCharCode(65+index)}</span> <span class="${dir === 'ltr' ? 'mr-auto' : 'ml-auto'}">${optText}</span>`;
-                    btn.style.direction = dir;
-                    btn.querySelector('span:last-child').className = ""; 
-                });
-                return;
+                btnEn.className = "flex items-center gap-2 px-3 md:px-4 py-2 rounded-md font-bold transition-all text-sm bg-white text-gray-900 shadow-sm";
+                btnAr.className = "flex items-center gap-2 px-3 md:px-4 py-2 rounded-md font-bold transition-all text-sm text-gray-400 hover:text-white";
             }
 
-            optsContainer.innerHTML = '';
-            const opts = showArabic ? q.a_ar : q.a;
+            // تحديث عنوان الطباعة المخفي
+            document.body.setAttribute('data-print-title', isAr ? 'حلول واجب سيف علي - برمجة C++' : 'Saif Ali Assignment - C++ Programming');
 
-            opts.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = `w-full ${align} p-4 rounded-xl border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition flex items-center group bg-white shadow-sm`;
-                btn.style.direction = dir;
-                btn.innerHTML = `<span class="w-8 h-8 rounded-full bg-gray-100 group-hover:bg-white flex items-center justify-center text-xs ${showArabic ? 'ml-3' : 'mr-3'} font-bold text-gray-600 shrink-0 border border-gray-200 transition">${String.fromCharCode(65+index)}</span> <span>${opt}</span>`;
-                btn.onclick = () => checkAnswer(index, btn);
-                optsContainer.appendChild(btn);
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            const isAr = currentLang === 'ar';
+
+            assignmentData.forEach(item => {
+                const isOpen = openQuestionId === item.id;
+                
+                // بناء هيكل السؤال
+                const questionDiv = document.createElement('div');
+                questionDiv.className = "bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden transition-all duration-300 print-shadow-none print-mb-8";
+                
+                // رأس السؤال (للنقر)
+                const headerHtml = `
+                    <button onclick="toggleQuestion('${item.id}')" class="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors print-hidden" dir="auto">
+                        <h2 class="text-lg md:text-xl font-bold text-gray-800 pr-4">${isAr ? item.q_ar : item.q_en}</h2>
+                        <i data-lucide="${isOpen ? 'chevron-up' : 'chevron-down'}" class="w-6 h-6 ${isOpen ? 'text-yellow-600' : 'text-gray-400'} shrink-0"></i>
+                    </button>
+                    <!-- عنوان للطباعة فقط -->
+                    <div class="hidden print-block w-full px-6 py-5 bg-gray-50 border-b border-gray-200" dir="auto">
+                        <h2 class="text-lg md:text-xl font-bold text-gray-800">${isAr ? item.q_ar : item.q_en}</h2>
+                    </div>
+                `;
+
+                // محتوى الإجابة
+                let answerHtml = '';
+                if (!item.isAlgo) {
+                    answerHtml = `
+                        <div class="bg-gray-50 border-l-4 border-gray-800 p-5 rounded-r-lg">
+                            <div class="flex items-center gap-2 mb-3">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-gray-800"></i>
+                                <h4 class="font-bold text-gray-800 uppercase text-sm tracking-wider">${isAr ? 'الجواب الرسمي (للامتحان)' : 'Formal Answer'}</h4>
+                            </div>
+                            <p class="text-gray-700 text-lg leading-loose whitespace-pre-wrap font-medium">${isAr ? item.ans_ar : item.ans_en}</p>
+                        </div>
+                    `;
+                } else {
+                    answerHtml = `
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <!-- Algorithm Section -->
+                            <div class="flex-1 bg-slate-800 text-green-400 p-6 rounded-xl font-mono shadow-inner border border-slate-700">
+                                <h4 class="font-bold text-white uppercase text-sm mb-4 pb-2 border-b border-slate-600 flex items-center gap-2">
+                                    <i data-lucide="code" class="w-4 h-4"></i>
+                                    ${isAr ? 'الخوارزمية (Algorithm)' : 'Algorithm'}
+                                </h4>
+                                <pre class="whitespace-pre-wrap text-base md:text-lg leading-relaxed">${isAr ? item.algo_ar : item.algo_en}</pre>
+                            </div>
+                            
+                            <!-- Flowchart Section -->
+                            <div class="flex-1 bg-white border-2 border-gray-200 p-6 rounded-xl flex flex-col items-center shadow-sm">
+                                <h4 class="font-bold text-gray-800 uppercase text-sm mb-6 pb-2 border-b-2 border-gray-200 w-full text-center">
+                                    ${isAr ? 'المخطط الانسيابي (Flowchart)' : 'Flowchart'}
+                                </h4>
+                                <div class="transform scale-90 md:scale-100 origin-top">
+                                    ${item.flowchartHtml}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // مربع شرح الأستاذ
+                const explanationHtml = `
+                    <div class="bg-yellow-50 border-2 border-yellow-400 rounded-xl p-6 relative shadow-sm mt-8">
+                        <div class="absolute -top-4 right-6 bg-yellow-400 text-yellow-900 text-sm font-bold px-4 py-1.5 rounded-full shadow-md flex items-center gap-2">
+                            <i data-lucide="lightbulb" class="w-4 h-4"></i>
+                            شلون تشرحها للأستاذ؟ (مهم)
+                        </div>
+                        <p class="text-yellow-900 font-bold mt-3 font-serif text-lg leading-relaxed dir-rtl text-right" dir="rtl">
+                            "${item.explanation}"
+                        </p>
+                    </div>
+                `;
+
+                // تجميع كل الأجزاء
+                questionDiv.innerHTML = `
+                    ${headerHtml}
+                    <div class="accordion-content print-expand ${isOpen ? 'open' : ''}">
+                        <div class="p-6 space-y-8">
+                            ${answerHtml}
+                            ${explanationHtml}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(questionDiv);
             });
+
+            // إعادة تفعيل أيقونات Lucide بعد تحديث الـ DOM
+            lucide.createIcons();
         }
 
-        function checkAnswer(selectedIndex, btnElement) {
-            if (answered) return;
-            answered = true;
+        // --- تصدير لملف Word ---
+        function exportWord() {
+            const isAr = currentLang === 'ar';
+            const dir = isAr ? 'rtl' : 'ltr';
+            const align = isAr ? 'right' : 'left';
             
-            const q = questions[currentQ];
-            const feedback = document.getElementById('feedback');
-            const feedbackContent = document.getElementById('feedback-content');
-            
-            const buttons = document.getElementById('options-container').children;
-            
-            buttons[q.correct].classList.remove('border-gray-200', 'bg-white');
-            buttons[q.correct].classList.add('border-green-500', 'bg-green-50');
-            buttons[q.correct].querySelector('span:first-child').classList.add('bg-green-500', 'text-white', 'border-green-500');
+            let html = `<html dir="${dir}" lang="${currentLang}">
+            <head>
+            <meta charset="utf-8">
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, sans-serif; text-align: ${align}; padding: 20px; color: #000; }
+                h1 { color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; text-align: center; }
+                h2 { color: #1f2937; margin-top: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 5px; }
+                h4 { color: #047857; margin-top: 15px; }
+                .ans { background-color: #f9fafb; padding: 15px; border: 1px solid #e5e7eb; border-radius: 5px; font-size: 14pt; font-weight: bold; white-space: pre-wrap; }
+                .algo { font-family: monospace; background-color: #1e293b; color: #4ade80; padding: 15px; border-radius: 5px; font-size: 14pt; white-space: pre-wrap; }
+                .tip { background-color: #fef3c7; color: #92400e; padding: 15px; border: 1px solid #fde68a; border-radius: 5px; font-size: 14pt; font-weight: bold; }
+            </style>
+            </head>
+            <body>
+            <h1>${isAr ? 'حلول واجب سيف علي' : 'Saif Ali Assignment'}</h1>
+            `;
 
-            if (selectedIndex === q.correct) {
-                score++;
-                feedbackContent.innerHTML = '<div class="text-green-600 flex flex-col items-center gap-1"><i class="fas fa-check-circle text-3xl"></i><span>إجابة صحيحة! ممتاز</span></div>';
-            } else {
-                btnElement.classList.remove('border-gray-200', 'bg-white');
-                btnElement.classList.add('border-red-500', 'bg-red-50');
-                btnElement.querySelector('span:first-child').classList.add('bg-red-500', 'text-white', 'border-red-500');
-                feedbackContent.innerHTML = '<div class="text-red-600 flex flex-col items-center gap-1"><i class="fas fa-times-circle text-3xl"></i><span>إجابة خاطئة!</span></div>';
-            }
+            assignmentData.forEach(item => {
+                html += `<h2>${isAr ? item.q_ar : item.q_en}</h2>`;
+                if (!item.isAlgo) {
+                    html += `<h4>${isAr ? 'الجواب الرسمي:' : 'Formal Answer:'}</h4>`;
+                    html += `<div class="ans">${isAr ? item.ans_ar : item.ans_en}</div>`;
+                } else {
+                    html += `<h4>${isAr ? 'الخوارزمية (Algorithm):' : 'Algorithm:'}</h4>`;
+                    html += `<div class="algo">${isAr ? item.algo_ar : item.algo_en}</div>`;
+                    html += `<p style="color: #6b7280; font-style: italic;">${isAr ? '(ملاحظة: المخطط الانسيابي Flowchart لا يظهر في ملف الوورد، يرجى طباعة PDF لرؤيته)' : '(Note: Flowchart is not visible in Word export)'}</p>`;
+                }
+                html += `<h4>${isAr ? 'شلون تشرحها للأستاذ؟' : 'Explanation for Professor:'}</h4>`;
+                html += `<div class="tip">${item.explanation}</div>`;
+            });
 
-            document.getElementById('score-display').innerText = `النقاط: ${score}`;
-            feedback.classList.remove('hidden');
-            
-            const nextBtn = document.getElementById('next-btn');
-            if (currentQ === questions.length - 1) {
-                nextBtn.innerText = "عرض النتيجة النهائية";
-            } else {
-                nextBtn.innerText = "السؤال التالي";
-            }
+            html += `</body></html>`;
+
+            // تكوين الملف وتحميله
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Saif_Ali_Assignment_${currentLang}.doc`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
-        function nextQuestion() {
-            currentQ++;
-            if (currentQ < questions.length) {
-                loadQuestion();
-            } else {
-                showFinalResult();
-            }
-        }
-
-        function showFinalResult() {
-            document.getElementById('final-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = score;
-        }
-
-        function restartQuiz() {
-            currentQ = 0;
-            score = 0;
-            document.getElementById('score-display').innerText = `النقاط: 0`;
-            document.getElementById('final-screen').classList.add('hidden');
-            loadQuestion();
-        }
-
-        loadQuestion();
-
+        // التهيئة الأولى عند تحميل الصفحة
+        window.onload = () => {
+            renderQuestions();
+            lucide.createIcons();
+        };
     </script>
 </body>
 </html>
